@@ -1141,18 +1141,14 @@ async function takeSnapshot() {
         const filename = "foto_" + Date.now() + ".png";
         
 
-        // OPCIÓN 1: Enviar a Google Apps Script (con mejor manejo de errores)
         try {
+            const formData = new FormData();
+            formData.append("filename", filename);
+            formData.append("image", imageData);
+
             const response = await fetch("https://script.google.com/macros/s/AKfycbyvcf7X8PneS7iQSKLpU0KxEWOrMK-qqwPTGTQzX4Xico8fHmQgNwyQCaYbqMnjLks/exec", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    filename: filename,
-                    image: imageData
-                }),
-    
+                body: formData // ✅ No afegeix cap header CORS problemàtic
             });
 
             if (!response.ok) {
