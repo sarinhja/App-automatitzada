@@ -1148,7 +1148,8 @@ async function takeSnapshot() {
 
             const response = await fetch("https://script.google.com/macros/s/AKfycbze_jp3qcJZHutqixEt1wOs9eF9elEwAJCH_G4xZsIbPObC5B3xoajKCkF78oZvdFPj/exec", {
                 method: "POST",
-                body: formData // ✅ No afegeix cap header CORS problemàtic
+                body: formData, // ✅ No afegeix cap header CORS problemàtic
+                mode: 'no-cors' // Això evita el preflight CORS
             });
 
             if (!response.ok) {
