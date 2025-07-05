@@ -1175,12 +1175,6 @@ async function takeSnapshot() {
             
         }catch (error) {
             console.error('❌ Error subiendo foto:', error);
-            const a = document.createElement('a');
-            a.href = imageData;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
 
     } catch (error) {
