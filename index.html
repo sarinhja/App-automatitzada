@@ -2,67 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Detector de Caras Real con face-api.js</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+        }
+
+       body {
             font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 100%;
+            margin: 0;
+            padding: 10px;  /* Reducir padding */
             background: #000000;
             color: white;
+            overflow-x: hidden;  /* Evitar scroll horizontal */
+            -webkit-text-size-adjust: 100%;
         }
         
         h1 {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;  /* Responsive font size */
+            padding: 0 10px;
         }
+
         
-        .video-container {
+       .video-container {
             position: relative;
             display: flex;
             justify-content: center;
-            margin-bottom: 10px;
-            width: 100%;     /* Para que ocupe todo el ancho posible */
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 100vw;
         }
         
-        #video {
+       #video, #canvas {
+            width: 100%;
             max-width: 100%;
             height: auto;
             background: #000;
-            transform: scaleX(-1);
-        }
-        
-        #canvas {
-            border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            max-width: 100%;
-            height: auto;
-            background: #000;
-            display: none;
             transform: scaleX(-1);
         }
         
         .controls {
             background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
+            padding: 15px;  /* Reducir padding */
             border-radius: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
+
         
         .slider-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;  /* Reducir gap */
             margin-bottom: 15px;
+            flex-wrap: wrap;  /* Permitir wrap en móvil */
         }
+
         
         .slider-container label {
             font-weight: bold;
-            min-width: 120px;
+            min-width: 100px;  /* Reducir min-width */
+            font-size: 0.9rem;  /* Reducir tamaño fuente */
         }
-        
+                
         .slider {
             flex: 1;
             height: 8px;
@@ -84,12 +89,14 @@
         
         .slider-value {
             font-weight: bold;
-            min-width: 80px;
+            min-width: 60px;  /* Reducir min-width */
             text-align: center;
             background: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
+            padding: 5px 8px;
             border-radius: 8px;
+            font-size: 0.8rem;
         }
+
         
         .status {
             padding: 10px;
@@ -123,14 +130,15 @@
             background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 12px 20px;  /* Reducir padding */
             border-radius: 25px;
-            font-size: 16px;
+            font-size: 14px;  /* Reducir font-size */
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: transform 0.2s;
-            margin: 0 10px;
+            margin: 5px;  /* Reducir margin */
+            min-width: 120px;  /* Ancho mínimo */
         }
         
         button:hover {
@@ -171,6 +179,67 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Media queries para móvil */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+                margin-bottom: 10px;
+            }
+            
+            .controls {
+                padding: 10px;
+            }
+            
+            .slider-container {
+                gap: 8px;
+                margin-bottom: 10px;
+            }
+            
+            .slider-container label {
+                min-width: 80px;
+                font-size: 0.8rem;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 12px;
+                min-width: 100px;
+            }
+            
+            .button-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .slider-container label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+            
+            .slider {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .slider-value {
+                align-self: center;
+            }
         }
 
     </style>
@@ -239,6 +308,7 @@
         let renderLoopActive = false;
         let detectionLoopActive = false;
         let showDebugInfo = false;
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let previousDetections = [];
         let resizeTimeout;
 
@@ -472,12 +542,12 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     try {
         const minConfidence = 0.5;
         // Detectar caras con landmarks
-        const detections = await faceapi.detectAllFaces(video, 
-            new faceapi.TinyFaceDetectorOptions({ 
-                inputSize: 160,
-                scoreThreshold: minConfidence 
-            })
-        ).withFaceLandmarks(true);
+       const detections = await faceapi.detectAllFaces(video, 
+        new faceapi.TinyFaceDetectorOptions({ 
+            inputSize: isMobile ? 128 : 160,  // Reducir en móvil
+            scoreThreshold: 0.5 
+        })
+    ).withFaceLandmarks(true);
         
         // Actualizar detecciones
         detectedFaces = detections;
@@ -508,8 +578,7 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     if (effectActive) {
         startDetectionLoop();
     }
-}, 33); // Más frecuente: cada 80ms
-}
+    }, isMobile ? 100 : 33); // Más lento en móvil
 
 
         function updateStatus(message, type) {
@@ -979,9 +1048,10 @@ function applyNaturalBlending(featurePoints, centerX, centerY, width, height) {
         
         stream = await navigator.mediaDevices.getUserMedia({
             video: {
-                width: { ideal: 640 },
-                height: { ideal: 480 },
-                facingMode: 'user'
+                width: { ideal: isMobile ? 480 : 640 },
+                height: { ideal: isMobile ? 320 : 480 },
+                facingMode: 'user',
+                frameRate: { ideal: isMobile ? 15 : 30 }  // Reducir FPS en móvil
             }
         });
         
@@ -1197,6 +1267,17 @@ function handleResize() {
 }
 window.addEventListener('resize', handleResize);
 
+    // Agregar función para manejar orientación (después de handleResize):
+    function handleOrientationChange() {
+        setTimeout(() => {
+            if (cameraActive && video.videoWidth && video.videoHeight) {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                log('Canvas redimensionado por cambio de orientación', 'info');
+            }
+        }, 500);
+    }
+
        // Event listeners
        eyeSlider.addEventListener('input', updateSliders);
        
@@ -1255,6 +1336,8 @@ document.addEventListener('visibilitychange', () => {
         }
     }
 });
+
+window.addEventListener('orientationchange', handleOrientationChange);
 
 
 function startWithoutAI() {
