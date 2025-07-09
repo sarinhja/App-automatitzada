@@ -38,10 +38,48 @@
             padding-bottom: 56.25%; /* Aspect ratio 16:9 */
             margin-bottom: 10px;
             flex-shrink: 0;
-            max-height: 45vh;
+            max-height: 70vh; /* Cambiado de 45vh a 70vh */
             border-radius: 10px;
             overflow: hidden;
             background: #000;
+            }
+
+            /* Móvil vertical */
+            @media (max-width: 768px) {
+                .video-container {
+                    max-height: 65vh; /* Cambiado de 40vh a 65vh */
+                    margin-bottom: 8px;
+                }
+            }
+
+            /* Móvil muy pequeño */
+            @media (max-width: 480px) {
+                .video-container {
+                    max-height: 60vh; /* Cambiado de 35vh a 60vh */
+                    margin-bottom: 5px;
+                }
+            }
+
+            /* Pantallas bajas (altura limitada) */
+            @media (max-height: 600px) {
+                .video-container {
+                    max-height: 50vh; /* Cambiado de 30vh a 50vh */
+                }
+            }
+
+            /* Móvil horizontal */
+            @media (max-height: 500px) and (orientation: landscape) {
+                .video-container {
+                    max-height: 45vh; /* Cambiado de 25vh a 45vh */
+                    margin-bottom: 3px;
+                }
+            }
+
+            /* Pantallas muy pequeñas en altura */
+            @media (max-height: 400px) {
+                .video-container {
+                    max-height: 35vh; /* Cambiado de 20vh a 35vh */
+                }
         }
 
         #video, #canvas {
