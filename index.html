@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Detector de Caras Real con face-api.js</title>
-    <style>
-        * {
+    * {
     box-sizing: border-box;
 }
 
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 5px;
+    padding: 2px;
     background: #000000;
     color: white;
     overflow-x: hidden;
@@ -20,15 +19,15 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
 }
 
 h1 {
     text-align: center;
-    margin: 5px 0;
-    font-size: 1.2rem;
-    padding: 0 5px;
+    margin: 2px 0;
+    font-size: 1rem;
+    padding: 0 3px;
+    flex-shrink: 0;
 }
 
 .video-container {
@@ -36,8 +35,9 @@ h1 {
     display: flex;
     justify-content: center;
     flex: 1;
-    max-height: 60vh;
-    margin-bottom: 5px;
+    max-height: 45vh; /* Reducido para dejar más espacio */
+    margin-bottom: 3px;
+    min-height: 200px; /* Altura mínima para el video */
 }
 
 #video, #canvas {
@@ -51,29 +51,31 @@ h1 {
 
 .controls {
     background: rgba(255, 255, 255, 0.1);
-    padding: 8px;
-    border-radius: 10px;
-    margin-bottom: 5px;
+    padding: 4px;
+    border-radius: 8px;
+    margin-bottom: 3px;
     flex-shrink: 0;
+    max-height: 35vh; /* Limitar altura de controles */
+    overflow-y: auto;
 }
 
 .slider-container {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 4px;
+    margin-bottom: 4px;
 }
 
 .slider-container label {
     font-weight: bold;
-    min-width: 70px;
-    font-size: 0.75rem;
+    min-width: 45px;
+    font-size: 0.65rem;
 }
 
 .slider {
     flex: 1;
-    height: 6px;
-    border-radius: 3px;
+    height: 4px;
+    border-radius: 2px;
     background: rgba(153, 16, 16, 0.3);
     outline: none;
     -webkit-appearance: none;
@@ -81,72 +83,73 @@ h1 {
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: #4CAF50;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .slider-value {
     font-weight: bold;
-    min-width: 45px;
+    min-width: 35px;
     text-align: center;
     background: rgba(255, 255, 255, 0.2);
-    padding: 3px 6px;
-    border-radius: 6px;
-    font-size: 0.7rem;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.6rem;
 }
 
 .status {
-    padding: 6px;
-    border-radius: 6px;
+    padding: 4px;
+    border-radius: 4px;
     text-align: center;
     font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 0.8rem;
+    margin-bottom: 3px;
+    font-size: 0.7rem;
     flex-shrink: 0;
 }
 
 .status.loading {
     background: rgba(255, 193, 7, 0.3);
-    border: 2px solid #ffc107;
+    border: 1px solid #ffc107;
 }
 
 .status.success {
     background: rgba(76, 175, 80, 0.3);
-    border: 2px solid #4CAF50;
+    border: 1px solid #4CAF50;
 }
 
 .status.error {
     background: rgba(244, 67, 54, 0.3);
-    border: 2px solid #f44336;
+    border: 1px solid #f44336;
 }
 
 .button-container {
     text-align: center;
     flex-shrink: 0;
+    padding: 2px 0;
 }
 
 button {
     background: linear-gradient(45deg, #ff6b6b, #ee5a24);
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.7rem;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     transition: transform 0.2s;
-    margin: 3px;
-    min-width: 100px;
+    margin: 2px;
+    min-width: 70px;
 }
 
 button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
 }
 
 button:disabled {
@@ -156,14 +159,14 @@ button:disabled {
 }
 
 .loading-spinner {
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.3);
     border-radius: 50%;
-    border-top: 2px solid #4CAF50;
-    width: 16px;
-    height: 16px;
+    border-top: 1px solid #4CAF50;
+    width: 12px;
+    height: 12px;
     animation: spin 1s linear infinite;
     display: inline-block;
-    margin-right: 8px;
+    margin-right: 6px;
 }
 
 .lip-slider {
@@ -186,123 +189,113 @@ button:disabled {
 /* Específico para móvil */
 @media (max-width: 768px) {
     body {
-        padding: 3px;
-        height: 100vh;
+        padding: 1px;
     }
     
     h1 {
-        font-size: 1rem;
-        margin: 3px 0;
+        font-size: 0.9rem;
+        margin: 1px 0;
     }
     
     .video-container {
-        max-height: 55vh;
+        max-height: 40vh;
+        min-height: 180px;
     }
     
     .controls {
-        padding: 6px;
-    }
-    
-    .slider-container {
-        gap: 6px;
-        margin-bottom: 6px;
-    }
-    
-    .slider-container label {
-        min-width: 60px;
-        font-size: 0.7rem;
+        padding: 3px;
+        max-height: 30vh;
     }
     
     button {
-        padding: 6px 12px;
-        font-size: 0.75rem;
-        min-width: 80px;
+        padding: 5px 10px;
+        font-size: 0.65rem;
+        min-width: 60px;
     }
 }
 
 /* Para pantallas muy pequeñas */
 @media (max-width: 480px) {
     .video-container {
-        max-height: 50vh;
+        max-height: 38vh;
+        min-height: 160px;
+    }
+    
+    .controls {
+        max-height: 28vh;
+        padding: 2px;
     }
     
     .slider-container {
-        gap: 4px;
-        margin-bottom: 4px;
+        gap: 3px;
+        margin-bottom: 3px;
     }
     
     .slider-container label {
-        min-width: 50px;
-        font-size: 0.65rem;
+        min-width: 40px;
+        font-size: 0.6rem;
     }
     
     .slider-value {
-        font-size: 0.65rem;
-        min-width: 40px;
-        padding: 2px 4px;
+        font-size: 0.6rem;
+        min-width: 30px;
+        padding: 1px 3px;
     }
     
     button {
-        padding: 5px 10px;
-        font-size: 0.7rem;
-        min-width: 70px;
+        padding: 4px 8px;
+        font-size: 0.6rem;
+        min-width: 50px;
     }
 }
 
 /* Para pantallas horizontales en móvil */
 @media (max-height: 500px) and (orientation: landscape) {
     .video-container {
-        max-height: 40vh;
+        max-height: 35vh;
+        min-height: 120px;
     }
     
     h1 {
-        font-size: 0.9rem;
-        margin: 2px 0;
+        font-size: 0.8rem;
+        margin: 1px 0;
     }
     
     .controls {
-        padding: 4px;
+        padding: 2px;
+        max-height: 25vh;
     }
     
     .slider-container {
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
     
     .status {
-        padding: 4px;
-        font-size: 0.7rem;
+        padding: 2px;
+        font-size: 0.6rem;
     }
-
-    .camera-page {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .video-container {
-        flex: 0 0 55%;
-        position: relative;
-    }
-
-    .controls {
-        flex: 0 0 30%;
-        overflow-y: auto;
-    }
-
-    .button-container {
-        flex: 0 0 15%;
-    }
-
-    .video-container canvas {
-        z-index: 1;
-    }
-
-    .controls, .button-container {
-        z-index: 2;
-        position: relative;
+    
+    button {
+        padding: 3px 6px;
+        font-size: 0.6rem;
     }
 }
-    </style>
+
+/* Para pantallas muy pequeñas en altura */
+@media (max-height: 600px) {
+    .video-container {
+        max-height: 35vh;
+    }
+    
+    .controls {
+        max-height: 25vh;
+    }
+    
+    h1 {
+        font-size: 0.8rem;
+        margin: 1px 0;
+    }
+}
 
 </head>
 <body>
