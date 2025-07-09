@@ -6,297 +6,389 @@
     <title>Detector de Caras Real con face-api.js</title>
     <style>
         * {
-    box-sizing: border-box;
-}
+            box-sizing: border-box;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 2px;
-    background: #000000;
-    color: white;
-    overflow-x: hidden;
-    -webkit-text-size-adjust: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 5px;
+            background: #000000;
+            color: white;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-h1 {
-    text-align: center;
-    margin: 2px 0;
-    font-size: 1rem;
-    padding: 0 3px;
-    flex-shrink: 0;
-}
+        h1 {
+            text-align: center;
+            margin: 5px 0;
+            font-size: 1.2rem;
+            padding: 0 5px;
+            flex-shrink: 0;
+        }
 
-.video-container {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    flex: 1;
-    max-height: 45vh; /* Reducido para dejar más espacio */
-    margin-bottom: 3px;
-    min-height: 200px; /* Altura mínima para el video */
-}
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            margin-bottom: 10px;
+            flex-shrink: 0;
+            max-height: 45vh;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #000;
+        }
 
-#video, #canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    object-fit: cover;
-    background: #000;
-    transform: scaleX(-1);
-}
+        #video, #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+            transform: scaleX(-1);
+        }
 
-.controls {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 4px;
-    border-radius: 8px;
-    margin-bottom: 3px;
-    flex-shrink: 0;
-    max-height: 35vh; /* Limitar altura de controles */
-    overflow-y: auto;
-}
+        .controls {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+        }
 
-.slider-container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 4px;
-}
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
 
-.slider-container label {
-    font-weight: bold;
-    min-width: 45px;
-    font-size: 0.65rem;
-}
+        .slider-container label {
+            font-weight: bold;
+            min-width: 70px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
 
-.slider {
-    flex: 1;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(153, 16, 16, 0.3);
-    outline: none;
-    -webkit-appearance: none;
-}
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(153, 16, 16, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
 
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #4CAF50;
-    cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-.slider-value {
-    font-weight: bold;
-    min-width: 35px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-size: 0.6rem;
-}
+        .slider-value {
+            font-weight: bold;
+            min-width: 45px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 6px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            flex-shrink: 0;
+        }
 
-.status {
-    padding: 4px;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 3px;
-    font-size: 0.7rem;
-    flex-shrink: 0;
-}
+        .status {
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
 
-.status.loading {
-    background: rgba(255, 193, 7, 0.3);
-    border: 1px solid #ffc107;
-}
+        .status.loading {
+            background: rgba(255, 193, 7, 0.3);
+            border: 2px solid #ffc107;
+        }
 
-.status.success {
-    background: rgba(76, 175, 80, 0.3);
-    border: 1px solid #4CAF50;
-}
+        .status.success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
 
-.status.error {
-    background: rgba(244, 67, 54, 0.3);
-    border: 1px solid #f44336;
-}
+        .status.error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 2px solid #f44336;
+        }
 
-.button-container {
-    text-align: center;
-    flex-shrink: 0;
-    padding: 2px 0;
-}
+        .button-container {
+            text-align: center;
+            flex-shrink: 0;
+            padding: 5px 0;
+        }
 
-button {
-    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 15px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    transition: transform 0.2s;
-    margin: 2px;
-    min-width: 70px;
-}
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+            margin: 3px;
+            min-width: 100px;
+        }
 
-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.4);
-}
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
 
-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-}
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-.loading-spinner {
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 50%;
-    border-top: 1px solid #4CAF50;
-    width: 12px;
-    height: 12px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-right: 6px;
-}
+        .loading-spinner {
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 2px solid #4CAF50;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
 
-.lip-slider {
-    background: linear-gradient(45deg, #ff6b9d, #c44569);
-}
+        .lip-slider {
+            background: linear-gradient(45deg, #ff6b9d, #c44569);
+        }
 
-.lip-slider::-webkit-slider-thumb {
-    background: #ff6b9d;
-}
+        .lip-slider::-webkit-slider-thumb {
+            background: #ff6b9d;
+        }
 
-.camera-page.hidden {
-    display: none;
-}
+        .camera-page.hidden {
+            display: none;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-/* Específico para móvil */
-@media (max-width: 768px) {
-    body {
-        padding: 1px;
-    }
-    
-    h1 {
-        font-size: 0.9rem;
-        margin: 1px 0;
-    }
-    
-    .video-container {
-        max-height: 40vh;
-        min-height: 180px;
-    }
-    
-    .controls {
-        padding: 3px;
-        max-height: 30vh;
-    }
-    
-    button {
-        padding: 5px 10px;
-        font-size: 0.65rem;
-        min-width: 60px;
-    }
-}
+        /* Móvil vertical */
+        @media (max-width: 768px) {
+            body {
+                padding: 3px;
+            }
+            
+            h1 {
+                font-size: 1rem;
+                margin: 3px 0;
+            }
+            
+            .video-container {
+                max-height: 40vh;
+                margin-bottom: 8px;
+            }
+            
+            .controls {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .slider-container {
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .slider-container label {
+                min-width: 60px;
+                font-size: 0.75rem;
+            }
+            
+            .slider-value {
+                font-size: 0.65rem;
+                min-width: 40px;
+                padding: 2px 4px;
+            }
+            
+            button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                min-width: 80px;
+            }
+        }
 
-/* Para pantallas muy pequeñas */
-@media (max-width: 480px) {
-    .video-container {
-        max-height: 38vh;
-        min-height: 160px;
-    }
-    
-    .controls {
-        max-height: 28vh;
-        padding: 2px;
-    }
-    
-    .slider-container {
-        gap: 3px;
-        margin-bottom: 3px;
-    }
-    
-    .slider-container label {
-        min-width: 40px;
-        font-size: 0.6rem;
-    }
-    
-    .slider-value {
-        font-size: 0.6rem;
-        min-width: 30px;
-        padding: 1px 3px;
-    }
-    
-    button {
-        padding: 4px 8px;
-        font-size: 0.6rem;
-        min-width: 50px;
-    }
-}
+        /* Móvil muy pequeño */
+        @media (max-width: 480px) {
+            body {
+                padding: 2px;
+            }
+            
+            h1 {
+                font-size: 0.9rem;
+                margin: 2px 0;
+            }
+            
+            .video-container {
+                max-height: 35vh;
+                margin-bottom: 5px;
+            }
+            
+            .controls {
+                padding: 6px;
+                margin-bottom: 5px;
+            }
+            
+            .slider-container {
+                gap: 6px;
+                margin-bottom: 6px;
+            }
+            
+            .slider-container label {
+                min-width: 50px;
+                font-size: 0.7rem;
+            }
+            
+            .slider {
+                height: 4px;
+            }
+            
+            .slider::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .slider-value {
+                font-size: 0.6rem;
+                min-width: 35px;
+                padding: 2px 3px;
+            }
+            
+            button {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                min-width: 70px;
+            }
+        }
 
-/* Para pantallas horizontales en móvil */
-@media (max-height: 500px) and (orientation: landscape) {
-    .video-container {
-        max-height: 35vh;
-        min-height: 120px;
-    }
-    
-    h1 {
-        font-size: 0.8rem;
-        margin: 1px 0;
-    }
-    
-    .controls {
-        padding: 2px;
-        max-height: 25vh;
-    }
-    
-    .slider-container {
-        margin-bottom: 2px;
-    }
-    
-    .status {
-        padding: 2px;
-        font-size: 0.6rem;
-    }
-    
-    button {
-        padding: 3px 6px;
-        font-size: 0.6rem;
-    }
-}
+        /* Pantallas bajas (altura limitada) */
+        @media (max-height: 600px) {
+            .video-container {
+                max-height: 30vh;
+            }
+            
+            .controls {
+                padding: 5px;
+            }
+            
+            .slider-container {
+                margin-bottom: 5px;
+            }
+            
+            button {
+                padding: 5px 10px;
+                font-size: 0.7rem;
+            }
+        }
 
-/* Para pantallas muy pequeñas en altura */
-@media (max-height: 600px) {
-    .video-container {
-        max-height: 35vh;
-    }
-    
-    .controls {
-        max-height: 25vh;
-    }
-    
-    h1 {
-        font-size: 0.8rem;
-        margin: 1px 0;
-    }
-}
+        /* Móvil horizontal */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 2px;
+            }
+            
+            h1 {
+                font-size: 0.8rem;
+                margin: 2px 0;
+            }
+            
+            .video-container {
+                max-height: 25vh;
+                margin-bottom: 3px;
+            }
+            
+            .controls {
+                padding: 4px;
+                margin-bottom: 3px;
+            }
+            
+            .slider-container {
+                gap: 4px;
+                margin-bottom: 4px;
+            }
+            
+            .slider-container label {
+                min-width: 45px;
+                font-size: 0.65rem;
+            }
+            
+            .slider {
+                height: 3px;
+            }
+            
+            .slider::-webkit-slider-thumb {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .slider-value {
+                font-size: 0.6rem;
+                min-width: 30px;
+                padding: 1px 2px;
+            }
+            
+            .status {
+                padding: 3px;
+                font-size: 0.65rem;
+                margin-bottom: 3px;
+            }
+            
+            button {
+                padding: 4px 8px;
+                font-size: 0.65rem;
+                min-width: 60px;
+            }
+        }
+
+        /* Pantallas muy pequeñas en altura */
+        @media (max-height: 400px) {
+            .video-container {
+                max-height: 20vh;
+            }
+            
+            .controls {
+                padding: 3px;
+            }
+            
+            .slider-container {
+                margin-bottom: 3px;
+            }
+            
+            button {
+                padding: 3px 6px;
+                font-size: 0.6rem;
+            }
+        }
     </style>
 
 </head>
