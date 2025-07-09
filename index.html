@@ -579,7 +579,7 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
         startDetectionLoop();
     }
     }, isMobile ? 100 : 33); // Más lento en móvil
-
+        }
 
         function updateStatus(message, type) {
             statusDiv.className = `status ${type}`;
@@ -844,30 +844,34 @@ function drawEnlargedEyes(detection) {
     effectActive = !effectActive;
     
     if (effectActive) {
-        video.style.display = 'none';
-        canvas.style.display = 'block';
-        
-        // Limpiar estado anterior
-        detectedFaces = [];
-        isProcessing = false;
-        
-        // INICIAR AMBOS BUCLES DE FORMA INDEPENDIENTE
-        startRenderLoop();     // Bucle de dibujo a 60fps
-        startDetectionLoop();  // Bucle de detección a ~12fps
-        
-    } else {
-        video.style.display = 'block';
-        canvas.style.display = 'none';
-        
-        // Limpiar todo
-        detectedFaces = [];
-        isProcessing = false;
-        
-        if (animationId) {
-            cancelAnimationFrame(animationId);
-            animationId = null;
-        }
+    video.style.display = 'none';
+    canvas.style.display = 'block';
+    
+    // Limpiar estado anterior
+    detectedFaces = [];
+    isProcessing = false;
+    
+    // INICIAR AMBOS BUCLES DE FORMA INDEPENDIENTE
+    startRenderLoop();
+    startDetectionLoop();
+    
+    // Forzar que siga reproduciéndose aunque esté oculto
+    if (video.paused) {
+        video.play();
     }
+} else {
+    video.style.display = 'block';
+    canvas.style.display = 'none';
+    
+    // Limpiar todo
+    detectedFaces = [];
+    isProcessing = false;
+    
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+}
 
     if (effectActive) {
           if (effectActive) {
@@ -1148,7 +1152,12 @@ function applyNaturalBlending(featurePoints, centerX, centerY, width, height) {
         ctx.imageSmoothingEnabled = true;
 }
 
-
+function showSuccess(message) {
+    updateStatus(message, 'success');
+    setTimeout(() => {
+        updateStatus('✅ Listo para detectar caras', 'success');
+    }, 3000);
+}
 
 async function takeSnapshot() {
     if (!cameraActive) {
@@ -1343,7 +1352,7 @@ window.addEventListener('orientationchange', handleOrientationChange);
 function startWithoutAI() {
     faceApiLoaded = false;
     modelsLoaded = false;
-    cameraBtn.disabled = false;
+    snapBtn.disabled = false;
     document.getElementById('noAIBtn').style.display = 'none';
     
 }
