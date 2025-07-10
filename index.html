@@ -38,7 +38,7 @@
             aspect-ratio: 4/3;
             margin-bottom: 10px;
             flex-shrink: 0;
-            max-height: 70vh;
+            max-height: 85vh;
             border-radius: 10px;
             overflow: hidden;
             background: #000;
@@ -47,7 +47,7 @@
             /* Móvil vertical */
             @media (max-width: 768px) {
                 .video-container {
-                    max-height: 65vh; /* Cambiado de 40vh a 65vh */
+                    max-height: 75vh; /* Cambiado de 40vh a 65vh */
                     margin-bottom: 8px;
                 }
             }
@@ -55,7 +55,7 @@
             /* Móvil muy pequeño */
             @media (max-width: 480px) {
                 .video-container {
-                    max-height: 60vh; /* Cambiado de 35vh a 60vh */
+                    max-height: 70vh; /* Cambiado de 35vh a 60vh */
                     margin-bottom: 5px;
                 }
             }
@@ -63,14 +63,14 @@
             /* Pantallas bajas (altura limitada) */
             @media (max-height: 600px) {
                 .video-container {
-                    max-height: 50vh; /* Cambiado de 30vh a 50vh */
+                    max-height: 60vh; /* Cambiado de 30vh a 50vh */
                 }
             }
 
             /* Móvil horizontal */
             @media (max-height: 500px) and (orientation: landscape) {
                 .video-container {
-                    max-height: 45vh; /* Cambiado de 25vh a 45vh */
+                    max-height: 55vh; /* Cambiado de 25vh a 45vh */
                     margin-bottom: 3px;
                 }
             }
@@ -78,7 +78,7 @@
             /* Pantallas muy pequeñas en altura */
             @media (max-height: 400px) {
                 .video-container {
-                    max-height: 35vh; /* Cambiado de 20vh a 35vh */
+                    max-height: 45vh; /* Cambiado de 20vh a 35vh */
                 }
         }
 
@@ -103,6 +103,8 @@
             flex: 1;
             overflow-y: auto;
             min-height: 0;
+            width: 100%; /* Añadir esta línea */
+            max-width: 100%; /* Añadir esta línea */
         }
 
         .slider-container {
