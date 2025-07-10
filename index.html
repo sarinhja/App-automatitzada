@@ -47,7 +47,7 @@
             /* Móvil vertical */
             @media (max-width: 768px) {
                 .video-container {
-                    max-height: 75vh; /* Cambiado de 40vh a 65vh */
+                    max-height: 50vh; /* Cambiado de 40vh a 65vh */
                     margin-bottom: 8px;
                 }
             }
@@ -55,7 +55,7 @@
             /* Móvil muy pequeño */
             @media (max-width: 480px) {
                 .video-container {
-                    max-height: 70vh; /* Cambiado de 35vh a 60vh */
+                    max-height: 45vh; /* Cambiado de 35vh a 60vh */
                     margin-bottom: 5px;
                 }
             }
@@ -63,14 +63,14 @@
             /* Pantallas bajas (altura limitada) */
             @media (max-height: 600px) {
                 .video-container {
-                    max-height: 60vh; /* Cambiado de 30vh a 50vh */
+                    max-height: 40vh; /* Cambiado de 30vh a 50vh */
                 }
             }
 
             /* Móvil horizontal */
             @media (max-height: 500px) and (orientation: landscape) {
                 .video-container {
-                    max-height: 55vh; /* Cambiado de 25vh a 45vh */
+                    max-height: 35vh; /* Cambiado de 25vh a 45vh */
                     margin-bottom: 3px;
                 }
             }
@@ -104,7 +104,7 @@
             overflow-y: auto;
             min-height: 0;
             width: 100%; /* Añadir esta línea */
-            max-width: 100%; /* Añadir esta línea */
+            max-width: none;
         }
 
         .slider-container {
@@ -117,7 +117,7 @@
         .slider-container label {
             font-weight: bold;
             min-width: 70px;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             flex-shrink: 0;
         }
 
@@ -253,18 +253,18 @@
             }
             
             .controls {
-                padding: 8px;
+                padding: 12px;
                 margin-bottom: 8px;
             }
             
             .slider-container {
                 gap: 8px;
-                margin-bottom: 8px;
+                margin-bottom: 12px;
             }
             
             .slider-container label {
                 min-width: 60px;
-                font-size: 0.75rem;
+                font-size: 0.85rem;
             }
             
             .slider-value {
@@ -308,7 +308,7 @@
             
             .slider-container label {
                 min-width: 50px;
-                font-size: 0.7rem;
+                font-size: 0.8rem;
             }
             
             .slider {
@@ -381,7 +381,7 @@
             
             .slider-container label {
                 min-width: 45px;
-                font-size: 0.65rem;
+                font-size: 0.75rem;
             }
             
             .slider {
