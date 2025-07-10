@@ -678,15 +678,23 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     }, isMobile ? 100 : 33); // Más lento en móvil
         }
 
-        function updateStatus(message, type) {
-            statusDiv.className = `status ${type}`;
-            if (type === 'loading') {
-                statusDiv.innerHTML = `<div class="loading-spinner"></div>${message}`;
-            } else {
-                statusDiv.textContent = message;
-            }
-            log(message, type);
-        }
+       function updateStatus(message, type) {
+    statusDiv.className = `status ${type}`;
+    if (type === 'loading') {
+        statusDiv.innerHTML = `<div class="loading-spinner"></div>${message}`;
+    } else {
+        statusDiv.textContent = message;
+    }
+    log(message, type);
+
+    // ✅ Amagar el missatge d'estat després de 3 segons
+    if (type === 'success') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 3000);
+    }
+}
+
 
        function updateSliders() {
     const rawValue = parseFloat(eyeSlider.value);
