@@ -678,22 +678,27 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     }, isMobile ? 100 : 33); // Más lento en móvil
         }
 
-       function updateStatus(message, type) {
-    statusDiv.className = `status ${type}`;
-    if (type === 'loading') {
-        statusDiv.innerHTML = `<div class="loading-spinner"></div>${message}`;
-    } else {
-        statusDiv.textContent = message;
-    }
-    log(message, type);
+    function updateStatus(message, type) {
+        statusDiv.className = `status ${type}`;
+        
+        if (type === 'loading') {
+            statusDiv.innerHTML = `<div class="loading-spinner"></div>${message}`;
+        } else {
+            statusDiv.textContent = message;
+        }
 
-    // ✅ Amagar el missatge d'estat després de 3 segons
-    if (type === 'success') {
-        setTimeout(() => {
-            statusDiv.style.display = 'none';
-        }, 3000);
+        log(message, type);
+
+        // 🔥 NOVETAT: ocultar missatge si és "success"
+        if (type === 'success') {
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000); // Oculta després de 3 segons
+        } else {
+            // Si no és success, assegura que es mostri
+            statusDiv.style.display = 'block';
+        }
     }
-}
 
 
        function updateSliders() {
