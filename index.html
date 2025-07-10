@@ -82,7 +82,7 @@
                 }
         }
 
-        #video, #canvas {
+       #video, #canvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -91,6 +91,8 @@
             object-fit: cover;
             background: #000;
             transform: scaleX(-1);
+            image-rendering: -webkit-optimize-contrast; /* Añadir */
+            image-rendering: optimize-contrast; /* Añadir */
         }
 
         .controls {
@@ -791,14 +793,13 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     }
 
     eyeValue.textContent = `x${parseFloat(eyeSlider.value).toFixed(1)}`;
-
     
     // Guardar la versió "modificada"
     eyeSlider.dataset.effectiveValue = transformedValue;
-
     lipValue.textContent = `x${lipSlider.value}`;
 
-    if (!effectActive && cameraActive) {
+    // SOLO activar efecto si los sliders están por encima de 1 Y la cámara está activa
+    if ((parseFloat(eyeSlider.value) > 1 || parseFloat(lipSlider.value) > 1) && cameraActive && !effectActive) {
         effectActive = true;
         video.style.display = 'none';
         canvas.style.display = 'block';
@@ -1169,6 +1170,10 @@ function drawEnlargedEyes(detection) {
 
         // 🔥 Aquí actives la càmera automàticament
         await startCamera();
+        // Mostrar video inmediatamente sin esperar interacción
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+        updateStatus('✅ Cámara lista. Mueve los sliders para activar efectos', 'success');
 
     } catch (error) {
         log(`Error inicializando: ${error.message}`, 'error');
@@ -1236,12 +1241,12 @@ function applyNaturalBlending(featurePoints, centerX, centerY, width, height) {
             throw new Error('getUserMedia no está soportado');
         }
         
-       stream = await navigator.mediaDevices.getUserMedia({
+      stream = await navigator.mediaDevices.getUserMedia({
             video: {
-                width: { ideal: isMobile ? 360 : 640 },
-                height: { ideal: isMobile ? 240 : 480 },
+                width: { ideal: isMobile ? 720 : 1280 },
+                height: { ideal: isMobile ? 480 : 720 },
                 facingMode: 'user',
-                frameRate: { ideal: isMobile ? 15 : 30 }
+                frameRate: { ideal: isMobile ? 30 : 60 }
             }
         });
         
@@ -1549,6 +1554,23 @@ function log(message, type = 'info') {
 
 lipSlider.addEventListener('input', updateSliders);
 
+// Forzar alta calidad en canvas
+if (canvas.getContext) {
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+}
+
+// Mejorar rendimiento en móvil
+if (isMobile) {
+    video.addEventListener('loadeddata', () => {
+        // Forzar resolución óptima
+        if (video.videoWidth > 0 && video.videoHeight > 0) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+        }
+    });
+}
 
 
    </script>
