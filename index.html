@@ -18,6 +18,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+  
         }
 
         h1 {
@@ -32,50 +33,13 @@
             flex: 0 0 auto;
             position: relative;
             width: 100%;
-            height: 70vh; /* o prova amb 65vh */
+            height: 80vh; /* o prova amb 65vh */
             margin-bottom: 8px;
             border-radius: 10px;
             overflow: hidden;
             background: #000;
         }
 
-            /* Móvil vertical */
-            @media (max-width: 768px) {
-                .video-container {
-                    max-height: 50vh; /* Cambiado de 40vh a 65vh */
-                    margin-bottom: 8px;
-                }
-            }
-
-            /* Móvil muy pequeño */
-            @media (max-width: 480px) {
-                .video-container {
-                    max-height: 45vh; /* Cambiado de 35vh a 60vh */
-                    margin-bottom: 5px;
-                }
-            }
-
-            /* Pantallas bajas (altura limitada) */
-            @media (max-height: 600px) {
-                .video-container {
-                    max-height: 60vh; /* Cambiado de 30vh a 50vh */
-                }
-            }
-
-            /* Móvil horizontal */
-            @media (max-height: 500px) and (orientation: landscape) {
-                .video-container {
-                    max-height: 35vh; /* Cambiado de 25vh a 45vh */
-                    margin-bottom: 3px;
-                }
-            }
-
-            /* Pantallas muy pequeñas en altura */
-            @media (max-height: 400px) {
-                .video-container {
-                    max-height: 45vh; /* Cambiado de 20vh a 35vh */
-                }
-        }
 
        #video, #canvas {
             position: absolute;
@@ -83,7 +47,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Cambiar de 'cover' a 'contain' */
+            object-fit: contain; /* Cambiar de 'cover' a 'contain' */
             background: #000;
             transform: scaleX(-1);
             image-rendering: -webkit-optimize-contrast;
@@ -237,105 +201,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Móvil vertical */
-        @media (max-width: 768px) {
-            body {
-                padding: 3px;
-            }
-            
-            h1 {
-                font-size: 1rem;
-                margin: 3px 0;
-            }
-            
-            .video-container {
-                max-height: 40vh;
-                margin-bottom: 8px;
-            }
-            
-            .controls {
-                padding: 12px;
-                margin-bottom: 8px;
-            }
-            
-            .slider-container {
-                gap: 8px;
-                margin-bottom: 12px;
-                width: 100%;
-            }
-            
-            .slider-container label {
-                min-width: 60px;
-                font-size: 0.85rem;
-            }
-            
-            .slider-value {
-                font-size: 0.65rem;
-                min-width: 40px;
-                padding: 2px 4px;
-            }
-            
-            button {
-                padding: 8px 16px;
-                font-size: 0.8rem;
-                min-width: 80px;
-            }
-        }
-
-        /* Móvil muy pequeño */
-        @media (max-width: 480px) {
-            body {
-                padding: 2px;
-            }
-            
-            h1 {
-                font-size: 0.9rem;
-                margin: 2px 0;
-            }
-            
-            .video-container {
-                max-height: 35vh;
-                margin-bottom: 5px;
-            }
-            
-            .controls {
-                padding: 6px;
-                margin-bottom: 5px;
-            }
-            
-            .slider-container {
-                gap: 6px;
-                margin-bottom: 6px;
-                width: 100%;
-            }
-            
-            .slider-container label {
-                min-width: 50px;
-                font-size: 0.8rem;
-            }
-            
-            .slider {
-                height: 4px;
-            }
-            
-            .slider::-webkit-slider-thumb {
-                width: 16px;
-                height: 16px;
-            }
-            
-            .slider-value {
-                font-size: 0.6rem;
-                min-width: 35px;
-                padding: 2px 3px;
-            }
-            
-            button {
-                padding: 6px 12px;
-                font-size: 0.7rem;
-                min-width: 70px;
-            }
         }
 
     </style>
