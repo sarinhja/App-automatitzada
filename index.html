@@ -34,15 +34,15 @@
         .video-container {
             position: relative;
             width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+            height: auto;
+            aspect-ratio: 16/9;
             margin-bottom: 10px;
             flex-shrink: 0;
-            max-height: 70vh; /* Cambiado de 45vh a 70vh */
+            max-height: 70vh;
             border-radius: 10px;
             overflow: hidden;
             background: #000;
-            }
+        }
 
             /* Móvil vertical */
             @media (max-width: 768px) {
@@ -88,11 +88,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Cambiar de 'cover' a 'contain' */
             background: #000;
             transform: scaleX(-1);
-            image-rendering: -webkit-optimize-contrast; /* Añadir */
-            image-rendering: optimize-contrast; /* Añadir */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
         }
 
         .controls {
