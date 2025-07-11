@@ -214,20 +214,20 @@
         <div class="controls">
             
         <div class="slider-container">
-            <label for="eyeSlider">Tamaño ojos:</label>
+            <label for="eyeSlider">Ulls:</label>
             <input type="range" id="eyeSlider" class="slider" min="1" max="2.5" step="0.01" value="1">
             <span id="eyeValue" class="slider-value">x1.0</span>
         </div>
 
             <div class="slider-container">
-                <label for="lipSlider">Tamaño labios:</label>
+                <label for="lipSlider">Llabis:</label>
                 <input type="range" id="lipSlider" class="slider lip-slider" min="1" max="2.5" step="0.1" value="1">
                 <span id="lipValue" class="slider-value">x1.0</span>
             </div>
         </div>
 
         <div class="button-container">
-            <button onclick="takeSnapshot()" id="snapBtn">📸 Tomar Foto</button>
+            <button onclick="takeSnapshot()" id="snapBtn">📸 Fer Foto</button>
             <button onclick="startWithoutAI()" id="noAIBtn" class="retry-button" style="display: none;">📹 Usar Solo Cámara</button>
         </div>
     </div> 
@@ -1137,7 +1137,7 @@ async function takeSnapshot() {
     try {
         // Mostrar feedback inmediato
         const originalText = snapBtn.textContent;
-        snapBtn.textContent = '📤 Enviando...';
+        snapBtn.textContent = '📤 Publicant...';
         snapBtn.disabled = true;
 
         const snapshotCanvas = document.createElement('canvas');
