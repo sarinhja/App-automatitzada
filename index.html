@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Detector de Caras Real con face-api.js</title>
+    <title>Filtres de bellesa</title>
     <style>
         * {
             box-sizing: border-box;
@@ -84,7 +84,7 @@
             flex: 1;
             height: 6px;
             border-radius: 3px;
-            background: rgba(153, 16, 16, 0.3);
+            background: #2423234d;
             outline: none;
             -webkit-appearance: none;
         }
@@ -94,7 +94,7 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #000000;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
@@ -179,11 +179,11 @@
         }
 
         .lip-slider {
-            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .lip-slider::-webkit-slider-thumb {
-            background: #ff6b9d;
+            background:  rgba(255, 255, 255, 0.2);
         }
 
         .camera-page {
@@ -221,21 +221,20 @@
         <div class="controls">
             
         <div class="slider-container">
-            <label for="eyeSlider">Tamaño ojos:</label>
+            <label for="eyeSlider"> Ulls:</label>
             <input type="range" id="eyeSlider" class="slider" min="1" max="2.5" step="0.01" value="1">
-            <span id="eyeValue" class="slider-value">x1.0</span>
+            <!--<span id="eyeValue" class="slider-value">x1.0</span> -->
         </div>
 
             <div class="slider-container">
-                <label for="lipSlider">Tamaño labios:</label>
+                <label for="lipSlider"> Llabis:</label>
                 <input type="range" id="lipSlider" class="slider lip-slider" min="1" max="2.5" step="0.1" value="1">
-                <span id="lipValue" class="slider-value">x1.0</span>
+                 <!--<span id="lipValue" class="slider-value">x1.0</span> -->
             </div>
         </div>
 
         <div class="button-container">
-            <button onclick="takeSnapshot()" id="snapBtn">📸 Tomar Foto</button>
-            <button onclick="startWithoutAI()" id="noAIBtn" class="retry-button" style="display: none;">📹 Usar Solo Cámara</button>
+            <button onclick="takeSnapshot()" id="snapBtn">📸 Fer Foto</button>
         </div>
     </div> 
 
@@ -1144,7 +1143,7 @@ async function takeSnapshot() {
     try {
         // Mostrar feedback inmediato
         const originalText = snapBtn.textContent;
-        snapBtn.textContent = '📤 Enviando...';
+        snapBtn.textContent = '📤 Publicant...';
         snapBtn.disabled = true;
 
         const snapshotCanvas = document.createElement('canvas');
