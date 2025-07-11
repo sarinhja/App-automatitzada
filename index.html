@@ -84,7 +84,7 @@
             flex: 1;
             height: 6px;
             border-radius: 3px;
-            background: rgba(153, 16, 16, 0.3);
+            background: rgba(0, 0, 0, 0.3);
             outline: none;
             -webkit-appearance: none;
         }
@@ -94,20 +94,9 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #4CAF50;
+            background: #af4c4c;
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .slider-value {
-            font-weight: bold;
-            min-width: 45px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 3px 6px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            flex-shrink: 0;
         }
 
         .status {
@@ -179,11 +168,11 @@
         }
 
         .lip-slider {
-            background: linear-gradient(45deg, #ff6b9d, #c44569);
+            background: linear-gradient(45deg, #444142, #361e25);
         }
 
         .lip-slider::-webkit-slider-thumb {
-            background: #ff6b9d;
+            background: #6e2a2a;
         }
 
         .camera-page {
@@ -223,13 +212,11 @@
         <div class="slider-container">
             <label for="eyeSlider">Tamaño ojos:</label>
             <input type="range" id="eyeSlider" class="slider" min="1" max="2.5" step="0.01" value="1">
-            <span id="eyeValue" class="slider-value">x1.0</span>
         </div>
 
             <div class="slider-container">
                 <label for="lipSlider">Tamaño labios:</label>
                 <input type="range" id="lipSlider" class="slider lip-slider" min="1" max="2.5" step="0.1" value="1">
-                <span id="lipValue" class="slider-value">x1.0</span>
             </div>
         </div>
 
