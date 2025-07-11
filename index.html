@@ -172,7 +172,7 @@
         }
 
         .lip-slider::-webkit-slider-thumb {
-            background: #6e2a2a;
+            background: #000000;
         }
 
         .camera-page {
@@ -212,11 +212,13 @@
         <div class="slider-container">
             <label for="eyeSlider">Tamaño ojos:</label>
             <input type="range" id="eyeSlider" class="slider" min="1" max="2.5" step="0.01" value="1">
+            <span id="eyeValue" class="slider-value">x1.0</span>
         </div>
 
             <div class="slider-container">
                 <label for="lipSlider">Tamaño labios:</label>
                 <input type="range" id="lipSlider" class="slider lip-slider" min="1" max="2.5" step="0.1" value="1">
+                <span id="lipValue" class="slider-value">x1.0</span>
             </div>
         </div>
 
@@ -231,9 +233,11 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const eyeSlider = document.getElementById('eyeSlider');
+        const eyeValue = document.getElementById('eyeValue');
         const statusDiv = document.getElementById('status');
         const snapBtn = document.getElementById('snapBtn');
         const lipSlider = document.getElementById('lipSlider');
+        const lipValue = document.getElementById('lipValue');
 
         let faceApiLoaded = false;
         let modelsLoaded = false;
@@ -562,9 +566,11 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
         transformedValue = 3;
     }
 
+    eyeValue.textContent = `x${parseFloat(eyeSlider.value).toFixed(1)}`;
     
     // Guardar la versió "modificada"
     eyeSlider.dataset.effectiveValue = transformedValue;
+    lipValue.textContent = `x${lipSlider.value}`;
 
     // SOLO activar efecto si los sliders están por encima de 1 Y la cámara está activa
     if ((parseFloat(eyeSlider.value) > 1 || parseFloat(lipSlider.value) > 1) && cameraActive && !effectActive) {
