@@ -231,11 +231,9 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const eyeSlider = document.getElementById('eyeSlider');
-        const eyeValue = document.getElementById('eyeValue');
         const statusDiv = document.getElementById('status');
         const snapBtn = document.getElementById('snapBtn');
         const lipSlider = document.getElementById('lipSlider');
-        const lipValue = document.getElementById('lipValue');
 
         let faceApiLoaded = false;
         let modelsLoaded = false;
@@ -564,11 +562,9 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
         transformedValue = 3;
     }
 
-    eyeValue.textContent = `x${parseFloat(eyeSlider.value).toFixed(1)}`;
     
     // Guardar la versió "modificada"
     eyeSlider.dataset.effectiveValue = transformedValue;
-    lipValue.textContent = `x${lipSlider.value}`;
 
     // SOLO activar efecto si los sliders están por encima de 1 Y la cámara está activa
     if ((parseFloat(eyeSlider.value) > 1 || parseFloat(lipSlider.value) > 1) && cameraActive && !effectActive) {
