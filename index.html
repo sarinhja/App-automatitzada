@@ -1140,8 +1140,8 @@ async function takeSnapshot() {
         snapBtn.textContent = '📤 Publicant...';
         snapBtn.disabled = true;
 
-        // ABRIR INSTAGRAM INMEDIATAMENTE (antes de las operaciones asíncronas)
-        window.open('https://www.instagram.com', '_blank');
+        // CREAR REFERENCIA DE VENTANA INMEDIATAMENTE (pero no abrir aún)
+        let instagramWindow = null;
 
         const snapshotCanvas = document.createElement('canvas');
         const snapshotCtx = snapshotCanvas.getContext('2d');
@@ -1203,25 +1203,17 @@ async function takeSnapshot() {
                 mode: 'no-cors'
             });
 
-            if (!response.ok) {
-                throw new Error(`Error del servidor: ${response.status} ${response.statusText}`);
-            }
-
-            const result = await response.json();
-            console.log('Respuesta del servidor:', result);
-            if (result.error) {
-                throw new Error(result.error);
-            }
-
-            if (result.error) {
-                throw new Error(result.error);
-            }
-
             // Éxito en Google Drive
             showSuccess('✅ Foto enviada a Google Drive!');
             
-        }catch (error) {
+            // ABRIR INSTAGRAM SOLO DESPUÉS DEL ÉXITO
+            setTimeout(() => {
+                window.open('https://www.instagram.com', '_blank');
+            }, 1000); // Esperar 1 segundo para que el usuario vea el mensaje de éxito
+            
+        } catch (error) {
             console.error('❌ Error subiendo foto:', error);
+            // NO abrir Instagram si hay error
         }
 
     } catch (error) {
