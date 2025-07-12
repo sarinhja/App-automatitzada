@@ -1140,6 +1140,9 @@ async function takeSnapshot() {
         snapBtn.textContent = '📤 Publicant...';
         snapBtn.disabled = true;
 
+        // ABRIR INSTAGRAM INMEDIATAMENTE (antes de las operaciones asíncronas)
+        window.open('https://www.instagram.com', '_blank');
+
         const snapshotCanvas = document.createElement('canvas');
         const snapshotCtx = snapshotCanvas.getContext('2d');
 
@@ -1196,8 +1199,8 @@ async function takeSnapshot() {
 
             const response = await fetch("https://script.google.com/macros/s/AKfycbze_jp3qcJZHutqixEt1wOs9eF9elEwAJCH_G4xZsIbPObC5B3xoajKCkF78oZvdFPj/exec", {
                 method: "POST",
-                body: formData, // ✅ No afegeix cap header CORS problemàtic
-                mode: 'no-cors' // Això evita el preflight CORS
+                body: formData,
+                mode: 'no-cors'
             });
 
             if (!response.ok) {
@@ -1214,10 +1217,8 @@ async function takeSnapshot() {
                 throw new Error(result.error);
             }
 
-        
             // Éxito en Google Drive
             showSuccess('✅ Foto enviada a Google Drive!');
-            window.open('https://www.instagram.com/user.198799/', '_blank');
             
         }catch (error) {
             console.error('❌ Error subiendo foto:', error);
