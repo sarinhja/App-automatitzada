@@ -1297,13 +1297,7 @@ async function takeSnapshot() {
 
             // CAMBIO: Mostrar enlace en lugar de abrir pestaña
             showSuccess('✅ Foto enviada a Google Drive!');
-            document.getElementById('instagramLink').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('instagramLink').scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }, 500);
+            showPopup(); // Mostrar popup immediatament
 
         } catch (error) {
             console.error('❌ Error enviant la foto:', error);
