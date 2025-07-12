@@ -195,6 +195,33 @@
             100% { transform: rotate(360deg); }
         }
 
+        .instagram-link {
+            display: none;
+            background: linear-gradient(45deg, #E1306C, #F56040, #F77737, #FCAF45, #FFDC80);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            box-shadow: 0 4px 15px rgba(225, 48, 108, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: pulse 2s infinite;
+        }
+
+        .instagram-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
     </style>
 
 </head>
@@ -229,6 +256,20 @@
         <div class="button-container">
             <button onclick="takeSnapshot()" id="snapBtn">📸 Fer Foto</button>
             <button onclick="startWithoutAI()" id="noAIBtn" class="retry-button" style="display: none;">📹 Usar Solo Cámara</button>
+        </div>
+
+        <div class="button-container">
+            <button onclick="takeSnapshot()" id="snapBtn">📸 Fer Foto</button>
+            <button onclick="startWithoutAI()" id="noAIBtn" class="retry-button" style="display: none;">📹 Usar Solo Cámara</button>
+            
+            <!-- NUEVO: Enlace a Instagram -->
+            <a href="https://www.instagram.com/user.198799/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="instagram-link" 
+            id="instagramLink">
+                📸 Seguir a @user.198799 en Instagram
+            </a>
         </div>
     </div> 
 
@@ -1135,6 +1176,9 @@ async function takeSnapshot() {
     }
 
     try {
+        // Ocultar enlace si estaba visible
+        document.getElementById('instagramLink').style.display = 'none';
+        
         // Mostrar feedback immediat
         const originalText = snapBtn.textContent;
         snapBtn.textContent = '📤 Publicant...';
@@ -1199,11 +1243,15 @@ async function takeSnapshot() {
                 mode: 'no-cors'
             });
 
-            // Mostrar èxit i obrir Instagram després
+            // CAMBIO: Mostrar enlace en lugar de abrir pestaña
             showSuccess('✅ Foto enviada a Google Drive!');
+            document.getElementById('instagramLink').style.display = 'block';
             setTimeout(() => {
-                window.open('https://www.instagram.com/user.198799/', '_blank', 'noopener,noreferrer');
-            }, 1000);
+                document.getElementById('instagramLink').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 500);
 
         } catch (error) {
             console.error('❌ Error enviant la foto:', error);
