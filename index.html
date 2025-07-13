@@ -555,15 +555,6 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
         if (smoothLevel > 0) {
             const finalWidth = originalEyeWidth * horizontalScale;
             const finalHeight = originalEyeHeight * verticalScale;
-
-            applyEdgeSmoothing(
-                validPoints,
-                centerX,
-                centerY,
-                finalWidth,
-                finalHeight,
-                smoothLevel * 0.3
-            );
         }
 
     } catch (error) {
@@ -604,8 +595,13 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     }
     
     isProcessing = false;
-    const detections = await faceapi.detectAllFaces(video, options).withFaceLandmarks(true);
-    
+    const detections = await faceapi.detectAllFaces(video, 
+            new faceapi.TinyFaceDetectorOptions({ 
+                inputSize: isMobile ? 128 : 160,
+                scoreThreshold: 0.5 
+            })
+        ).withFaceLandmarks(true);
+        
     // Añadir timestamp para interpolación
     detectedFaces = detections.map(detection => ({
         ...detection,
@@ -624,7 +620,7 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     if (effectActive) {
         startDetectionLoop();
     }
-    }, isMobile ? 100 : 33); // Más lento en móvil
+    }, isMobile ? 200 : 100); // Más lento en móvil
         }
 
     function updateStatus(message, type) {
@@ -868,15 +864,6 @@ function drawEnlargedEyes(detection) {
             if (smoothLevel > 0) {
                 const finalWidth = originalMouthWidth * horizontalScale;
                 const finalHeight = originalMouthHeight * verticalScale;
-
-                applyEdgeSmoothing(
-                    validPoints,
-                    centerX,
-                    centerY,
-                    finalWidth,
-                    finalHeight,
-                    smoothLevel * 0.4 // més intens que als ulls
-                );
             }
         }
 
@@ -1051,53 +1038,6 @@ function drawEnlargedEyes(detection) {
         updateStatus('❌ Error cargando IA. Usar "Solo Cámara" o "Reintentar"', 'error');
         showFallbackOptions();
     }
-}
-
-
-function applyNaturalBlending(featurePoints, centerX, centerY, width, height) {
-    try {
-        ctx.save();
-        
-        // Crear máscara para el área de transición
-        const transitionPoints = featurePoints.map(point => ({
-            x: centerX + (point.x - centerX) * 1.05, // 5% más grande
-            y: centerY + (point.y - centerY) * 1.05
-        }));
-        
-        ctx.beginPath();
-        ctx.moveTo(transitionPoints[0].x, transitionPoints[0].y);
-        for (let i = 1; i < transitionPoints.length; i++) {
-            const current = transitionPoints[i];
-            const next = transitionPoints[(i + 1) % transitionPoints.length];
-            const controlX = (current.x + next.x) / 2;
-            const controlY = (current.y + next.y) / 2;
-            ctx.quadraticCurveTo(current.x, current.y, controlX, controlY);
-        }
-        ctx.closePath();
-        ctx.clip();
-        
-        // Aplicar un blend suave
-        ctx.globalCompositeOperation = 'multiply';
-        ctx.globalAlpha = 0.1;
-        ctx.filter = 'blur(1px)';
-        
-        ctx.drawImage(
-            video,
-            centerX - width * 0.6, centerY - height * 0.6,
-            width * 1.2, height * 1.2,
-            centerX - width * 0.6, centerY - height * 0.6,
-            width * 1.2, height * 1.2
-        );
-        
-        ctx.restore();
-        
-    } catch (error) {
-        console.warn('Error en blend natural:', error);
-    }
-}
-
-    function showFallbackOptions() {
-    document.getElementById('noAIBtn').style.display = 'inline-block';
 }
     
        async function startCamera() {
@@ -1389,14 +1329,6 @@ window.addEventListener('resize', handleResize);
        
        // Iniciar carga de face-api.js
        initializeFaceApi();
-
-       // Limpieza automática cada 30 segundos
-setInterval(() => {
-    if (!effectActive && detectedFaces.length > 0) {
-        detectedFaces = [];
-        log('Limpieza automática de detecciones', 'info');
-    }
-})
 
 // Pausar cuando la página no es visible
 document.addEventListener('visibilitychange', () => {
