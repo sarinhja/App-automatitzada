@@ -320,7 +320,7 @@
             <div class="modal-content">
                 <span class="close-button" onclick="closePopup()">&times;</span>
                 <p style="text-align: center;">📷 Foto enviada correctament!</p>
-                <a href="https://www.instagram.com/user.198799/" target="_blank" class="popup-link">Obrir Instagram</a>
+                <a href="https://www.instagram.com/user.198799/" target="_blank" class="popup-link"> Veure Imatge</a>
             </div>
         </div>
     </div> 
@@ -1031,7 +1031,7 @@ function drawEnlargedEyes(detection) {
         // Mostrar video inmediatamente sin esperar interacción
         video.style.display = 'block';
         canvas.style.display = 'none';
-        updateStatus('✅ Cámara lista. Mueve los sliders para activar efectos', 'success');
+        updateStatus('✅ Mou els sliders per activar els efectes', 'success');
 
     } catch (error) {
         log(`Error inicializando: ${error.message}`, 'error');
@@ -1042,7 +1042,7 @@ function drawEnlargedEyes(detection) {
     
        async function startCamera() {
     try {
-        updateStatus('Solicitando acceso a la cámara...', 'loading');
+        updateStatus('Solicitant accés a la càmera...', 'loading');
         
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
@@ -1121,7 +1121,7 @@ function drawEnlargedEyes(detection) {
                snapBtn.disabled = true;
                
                log('Cámara detenida', 'success');
-               updateStatus('📹 Cámara detenida. Presiona "Activar Cámara" para reiniciar', 'info');
+               updateStatus('📹 Càmera aturada. Presiona "Activar Cámara" per reiniciar', 'info');
                
            } catch (error) {
                log(`Error deteniendo cámara: ${error.message}`, 'error');
