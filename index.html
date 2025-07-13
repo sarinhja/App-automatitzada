@@ -357,9 +357,6 @@
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         let previousDetections = [];
         let resizeTimeout;
-        let detectionCache = [];
-        let lastSuccessfulDetection = null;
-        let detectionFailCount = 0;
 
 
 
@@ -377,7 +374,6 @@ function checkVideoResize() {
 
         // Función principal de renderizado optimizada
        // Modificar renderFrame() para añadir un contador visual
-// CAMBIAR LA FUNCIÓN renderFrame() (línea ~63):
 function renderFrame() {
     if (effectActive) {
         animationId = requestAnimationFrame(renderFrame);
@@ -393,24 +389,24 @@ function renderFrame() {
         }
         
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
         
-        // Reducir calidad en móvil
-        if (isMobile) {
-            ctx.imageSmoothingEnabled = false;
-        } else {
-            ctx.imageSmoothingEnabled = true;
-            ctx.imageSmoothingQuality = 'high';
-        }
-        
+        // Resetear filtros
         ctx.filter = 'none';
+        
+        // Dibujar el video original
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
+        // Aplicar efectos solo si hay caras detectadas
         if (detectedFaces && detectedFaces.length > 0) {
             detectedFaces.forEach(detection => {
+                // Después aplicar efectos de ojos y labios encima
                 drawEnlargedEyes(detection);
             });
         }
         
+        // Asegurar que los filtros se reseteen
         ctx.filter = 'none';
         
     } catch (error) {
@@ -508,7 +504,7 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
         // Solo aplicar capas adicionales si scale > 1
         const horizontalGrowth = horizontalScale - 1;
         const verticalGrowth = verticalScale - 1;
-        const numLayers = Math.min(Math.floor(Math.max(horizontalGrowth, verticalGrowth) * 10), isMobile ? 4 : 8);
+        const numLayers = Math.min(Math.floor(Math.max(horizontalGrowth, verticalGrowth) * 10), 8);
 
         for (let layer = 1; layer <= numLayers; layer++) {
             const layerHorizontalScale = 1 + (horizontalGrowth * layer / numLayers);
@@ -579,8 +575,10 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
 
         // Función de detección optimizada
       async function detectFaces() {
+    // No verificar timing aquí, dejar que se ejecute más libremente
     if (isProcessing || !effectActive || !cameraActive || !modelsLoaded) return;
     
+    // Verificar que el video está disponible
     if (!video.videoWidth || video.readyState < 2 || video.paused) {
         return;
     }
@@ -588,34 +586,31 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     isProcessing = true;
     
     try {
-        const detections = await faceapi.detectAllFaces(video, 
-            new faceapi.TinyFaceDetectorOptions({ 
-                inputSize: isMobile ? 224 : 160,
-                scoreThreshold: isMobile ? 0.3 : 0.5
-            })
-        ).withFaceLandmarks(true);
+        const minConfidence = 0.5;
+        // Detectar caras con landmarks
+       const detections = await faceapi.detectAllFaces(video, 
+        new faceapi.TinyFaceDetectorOptions({ 
+            inputSize: isMobile ? 128 : 160,  // Reducir en móvil
+            scoreThreshold: 0.5 
+        })
+    ).withFaceLandmarks(true);
         
-        if (detections.length > 0) {
-            detectedFaces = detections;
-            lastSuccessfulDetection = detections;
-            detectionFailCount = 0;
-        } else if (isMobile && lastSuccessfulDetection && detectionFailCount < 3) {
-            // En móvil, usar última detección exitosa por hasta 3 frames
-            detectedFaces = lastSuccessfulDetection;
-            detectionFailCount++;
-        } else {
-            detectedFaces = [];
-        }
+        // Actualizar detecciones
+        detectedFaces = detections;
         
     } catch (error) {
         console.warn('Error en detección:', error);
-        detectionFailCount++;
-        if (isMobile && lastSuccessfulDetection && detectionFailCount < 5) {
-            detectedFaces = lastSuccessfulDetection;
-        }
+        // No limpiar detecciones en caso de error menor
     }
     
     isProcessing = false;
+    const detections = await faceapi.detectAllFaces(video, options).withFaceLandmarks(true);
+    
+    // Añadir timestamp para interpolación
+    detectedFaces = detections.map(detection => ({
+        ...detection,
+        timestamp: performance.now()
+    }));
 }
         // Función para detección continua
       function startDetectionLoop() {
@@ -625,11 +620,12 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
     detectFaces();
     
     // Programar siguiente detección
-  setTimeout(() => {
+   setTimeout(() => {
     if (effectActive) {
         startDetectionLoop();
     }
-    }, isMobile ? 200 : 33); // Aumentar a 200ms (5fps) en móvil
+    }, isMobile ? 100 : 33); // Más lento en móvil
+        }
 
     function updateStatus(message, type) {
         statusDiv.className = `status ${type}`;
@@ -651,7 +647,6 @@ function enlargeEyeProportional(eyePoints, scale, faceWidth, faceHeight) {
             // Si no és success, assegura que es mostri
             statusDiv.style.display = 'block';
         }
-    }
     }
 
 
@@ -778,7 +773,7 @@ function drawEnlargedEyes(detection) {
         if (clampedScale > 1) {
             const horizontalGrowth = horizontalScale - 1;
             const verticalGrowth = verticalScale - 1;
-           const numLayers = Math.min(Math.floor(Math.max(horizontalGrowth, verticalGrowth) * 8), isMobile ? 3 : 6);
+            const numLayers = Math.min(Math.floor(Math.max(horizontalGrowth, verticalGrowth) * 8), 6);
 
             for (let layer = 1; layer <= numLayers; layer++) {
                 const layerHorizontalScale = 1 + (horizontalGrowth * layer / numLayers);
@@ -1119,10 +1114,10 @@ function applyNaturalBlending(featurePoints, centerX, centerY, width, height) {
         
       stream = await navigator.mediaDevices.getUserMedia({
             video: {
-                width: { ideal: isMobile ? 480 : 1280 },  // Reducir a 480p
-                height: { ideal: isMobile ? 320 : 720 },  // Reducir a 320p
+                width: { ideal: isMobile ? 720 : 1280 },
+                height: { ideal: isMobile ? 480 : 720 },
                 facingMode: 'user',
-                frameRate: { ideal: isMobile ? 15 : 30 }  // Reducir a 15fps
+                frameRate: { ideal: isMobile ? 30 : 60 }
             }
         });
         
@@ -1265,12 +1260,12 @@ async function takeSnapshot() {
 
         if (!effectActive && typeof faceapi !== 'undefined' && modelsLoaded) {
             try {
-                const detections = await faceapi.detectAllFaces(video, 
-                new faceapi.TinyFaceDetectorOptions({ 
-                    inputSize: isMobile ? 224 : 160,  // Aumentar a 224 para móvil
-                    scoreThreshold: isMobile ? 0.3 : 0.5  // Reducir threshold en móvil
-                })
-            ).withFaceLandmarks(true);
+                const detections = await faceapi
+                    .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ 
+                        inputSize: 160, 
+                        scoreThreshold: 0.5 
+                    }))
+                    .withFaceLandmarks(true);
                 facesToPixelate = detections;
             } catch (detectionError) {
                 console.warn('Error detectant cares per al snapshot:', detectionError);
@@ -1302,7 +1297,13 @@ async function takeSnapshot() {
 
             // CAMBIO: Mostrar enlace en lugar de abrir pestaña
             showSuccess('✅ Foto enviada a Google Drive!');
-            showPopup(); // Mostrar popup immediatament
+            document.getElementById('instagramLink').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('instagramLink').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }, 500);
 
         } catch (error) {
             console.error('❌ Error enviant la foto:', error);
